@@ -2,13 +2,14 @@ package ar.unrn.tp.jpa.servicios;
 
 import ar.unrn.tp.api.VentaService;
 import ar.unrn.tp.modelo.*;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

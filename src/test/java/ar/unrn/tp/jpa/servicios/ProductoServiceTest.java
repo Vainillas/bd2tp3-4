@@ -4,13 +4,14 @@ import ar.unrn.tp.api.MarcaService;
 import ar.unrn.tp.api.ProductoService;
 import ar.unrn.tp.modelo.Categoria;
 import ar.unrn.tp.modelo.Producto;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+
 
 public class ProductoServiceTest {
     private EntityManagerFactory emf;

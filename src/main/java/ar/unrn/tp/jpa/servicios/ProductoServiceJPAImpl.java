@@ -4,8 +4,9 @@ import ar.unrn.tp.api.ProductoService;
 import ar.unrn.tp.modelo.Categoria;
 import ar.unrn.tp.modelo.Marca;
 import ar.unrn.tp.modelo.Producto;
+import jakarta.persistence.EntityManagerFactory;
 
-import javax.persistence.EntityManagerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 

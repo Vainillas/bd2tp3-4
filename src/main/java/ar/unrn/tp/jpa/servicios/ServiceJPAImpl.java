@@ -1,9 +1,11 @@
 package ar.unrn.tp.jpa.servicios;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
+
 import java.util.function.Consumer;
 
 public class ServiceJPAImpl {
@@ -13,14 +15,14 @@ public class ServiceJPAImpl {
         this.entityManager = entityManager;
     }
     public ServiceJPAImpl() {
-        setUp();
+        //setUp();
     }
     public void setUp(String params){
         entityManager = Persistence.createEntityManagerFactory(params);
     }
-    public void setUp(){
+    /*public void setUp(){
         entityManager = Persistence.createEntityManagerFactory("objectdb:myDbTestFile.tmp;drop");
-    }
+    }*/
 
     static void setUpEntityManager(Consumer<EntityManager> bloqueDeCodigo, EntityManagerFactory entityManager) {
         EntityManager em = entityManager.createEntityManager();

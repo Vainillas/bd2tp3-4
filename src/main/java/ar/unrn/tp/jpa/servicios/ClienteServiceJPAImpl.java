@@ -4,11 +4,9 @@ import ar.unrn.tp.api.ClienteService;
 import ar.unrn.tp.modelo.Cliente;
 import ar.unrn.tp.modelo.EmisorTarjeta;
 import ar.unrn.tp.modelo.TarjetaCredito;
+import jakarta.persistence.EntityManagerFactory;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;

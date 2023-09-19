@@ -1,9 +1,9 @@
 package ar.unrn.tp.modelo;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -78,6 +78,10 @@ public class PromocionCompra implements Promocion {
         if (diaInicio.isAfter(diaFin)) {
             throw new RuntimeException("El dia de inicio no puede ser posterior al dia de fin");
         }
+    }
+    @Override
+    public String toString(){
+        return "Promocion de compra con tarjeta de credito " + emisorTarjeta.toString() + " con descuento de " + DESCUENTO;
     }
 
 }

@@ -4,20 +4,28 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0">
 
-    <persistence-unit name="jpa-objectdb">
-        <description>My Persistence Unit</description>
-        <provider>com.objectdb.jpa.Provider</provider>
-        <!-- 		<mapping-file>META-INF/mappingFile.xml</mapping-file> -->
-        <!-- 		<jar-file>packedEntity.jar</jar-file> -->
-        <!-- 		<class>sample.MyEntity1</class> -->
-        <!-- 		<class>sample.MyEntity2</class> -->
+    <persistence-unit name="postgresql">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.postgresql.Driver"/>
+
             <property name="javax.persistence.jdbc.url"
-                      value="C:\Users\maliberti\IdeaProjects\testobjectdb.odb" />
-            <property name="javax.persistence.jdbc.user" value="admin" />
-            <property name="javax.persistence.jdbc.password"
-                      value="admin" />
+                      value="jdbc:postgresql://localhost:5432/bd2tp3"/>
+            <!-- <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/dbname"/> -->
+
+            <property name="javax.persistence.jdbc.user" value="postgres"/>
+            <property name="javax.persistence.jdbc.password" value="mysecretpassword"/>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.PostgreSQL10Dialect"/>
+            <!-- Todos estos vienen en el core de hibernate org.hibernate.dialect.MySQLDialect -->
+            <!-- org.hibernate.dialect.MySQL55Dialect -->
+            <!-- org.hibernate.dialect.MySQL57Dialect -->
+
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>
+
 
 </persistence>

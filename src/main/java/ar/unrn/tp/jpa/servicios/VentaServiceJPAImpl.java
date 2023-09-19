@@ -4,8 +4,9 @@ import ar.unrn.tp.api.ProductoService;
 import ar.unrn.tp.api.PromocionService;
 import ar.unrn.tp.api.VentaService;
 import ar.unrn.tp.modelo.*;
+import jakarta.persistence.EntityManagerFactory;
 
-import javax.persistence.EntityManagerFactory;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

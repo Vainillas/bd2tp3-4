@@ -1,17 +1,14 @@
 package ar.unrn.tp.modelo;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+
 import java.util.ArrayList;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 @Getter
@@ -23,7 +20,6 @@ public class Cliente {
 
     @Column(name = "id", nullable = false)
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
 
@@ -31,7 +27,9 @@ public class Cliente {
     private String apellido;
     private String email;
     //Sacar el fetchtype eager
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+
+    //@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Transient
     private List<TarjetaCredito> tarjetas = new ArrayList<>();
 
 

@@ -2,8 +2,9 @@ package ar.unrn.tp.jpa.servicios;
 
 import ar.unrn.tp.api.PromocionService;
 import ar.unrn.tp.modelo.*;
+import jakarta.persistence.EntityManagerFactory;
 
-import javax.persistence.EntityManagerFactory;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

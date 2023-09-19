@@ -3,20 +3,21 @@ package ar.unrn.tp.jpa.servicios;
 import ar.unrn.tp.api.ClienteService;
 import ar.unrn.tp.modelo.Cliente;
 import ar.unrn.tp.modelo.EmisorTarjeta;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+
 
 public class ClienteServiceTest {
     private EntityManagerFactory emf;
 
     @BeforeEach
     public void setUp() {
-        emf = Persistence.createEntityManagerFactory("objectdb:myDbTestFile.tmp;drop");
+        emf = Persistence.createEntityManagerFactory("postgresql");
     }
     @AfterEach
     public void tearDown() {

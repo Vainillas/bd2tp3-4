@@ -1,10 +1,10 @@
 package ar.unrn.tp.modelo;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 @Entity
@@ -82,5 +82,10 @@ public class PromocionProducto implements Promocion{
     @Override
     public boolean estaActivaHoy() {
         return estaActiva(LocalDate.now());
+    }
+
+    @Override
+    public String toString(){
+        return "Promocion de marca: " + marca.getNombre() + " con descuento de: " + DESCUENTO;
     }
 }

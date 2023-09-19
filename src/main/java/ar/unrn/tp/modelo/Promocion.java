@@ -1,6 +1,6 @@
 package ar.unrn.tp.modelo;
 
-import javax.persistence.Entity;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -11,5 +11,7 @@ public interface Promocion {
     double getDescuento();
     boolean estaActiva(LocalDate dia);
     boolean estaActivaHoy();
+
+    String toString();
 
 }

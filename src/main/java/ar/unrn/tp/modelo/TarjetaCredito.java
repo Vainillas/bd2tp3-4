@@ -1,8 +1,8 @@
 package ar.unrn.tp.modelo;
 
+import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +21,7 @@ public class TarjetaCredito {
     private Long id;
 
     private String numero;
+    @Enumerated(EnumType.STRING)
     private EmisorTarjeta emisorTarjeta;
     private boolean activa;
     private double fondos;

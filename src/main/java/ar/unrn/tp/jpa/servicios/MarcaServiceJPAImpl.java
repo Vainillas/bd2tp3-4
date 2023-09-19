@@ -2,8 +2,8 @@ package ar.unrn.tp.jpa.servicios;
 
 import ar.unrn.tp.api.MarcaService;
 import ar.unrn.tp.modelo.Marca;
+import jakarta.persistence.EntityManagerFactory;
 
-import javax.persistence.EntityManagerFactory;
 
 public class MarcaServiceJPAImpl extends ServiceJPAImpl implements MarcaService {
     public MarcaServiceJPAImpl(EntityManagerFactory entityManager) {
