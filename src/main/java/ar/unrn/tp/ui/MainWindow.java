@@ -11,10 +11,13 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
-public class MainWindow {
+public class MainWindow extends JFrame {
     private VentaService ventaService;
     private ProductoService productoService;
     private MarcaService marcaService;
@@ -24,6 +27,14 @@ public class MainWindow {
 
 
     JFrame frame;
+    ListaProductos listProductos;
+    JLabel listaDeProductosNewLabel;
+    DefaultListModel<ProductoDTO> modeloProductos = new DefaultListModel<>();
+    JPanel contentPane;
+    JButton agregarAlCarritoNewButton;
+    JButton listarProductosNewButton;
+    JButton irAlCarritoNewButton;
+    JTextPane textPanePromociones;
 
     public MainWindow(VentaService ventaService, ProductoService productoService, MarcaService marcaService, PromocionService promocionService, ClienteService clienteService, Long idCliente) {
         this.ventaService = ventaService;
@@ -37,51 +48,102 @@ public class MainWindow {
     public void loadUp() {
         System.out.println("Cargando ventana principal");
         inicializarJFrame();
-        frame.add(inicializarListaProductos());
-        frame.add(inicializarJPanePromocionesActivas());
-        clienteService.listarTarjetas(idCliente);
-
-
+        inicializarListaProductos();
+        inicializarJLabelTitulo();
+        inicializarJButtonAgregarAlCarrito();
+        inicializarJButtonListarProductos();
+        inicializarJButtonIrAlCarrito();
+        inicializarJPanePromocionesActivas();
+        contentPane.add(listProductos);
+        contentPane.add(listaDeProductosNewLabel);
+        contentPane.add(agregarAlCarritoNewButton);
+        contentPane.add(listarProductosNewButton);
+        contentPane.add(textPanePromociones);
+        contentPane.add(irAlCarritoNewButton);
 
     }
-    private void inicializarJFrame(){
-        frame = new JFrame("Ventana principal");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 300);
-        frame.setLayout(new BorderLayout());
-        frame.setVisible(true);
+
+    private void inicializarJButtonIrAlCarrito() {
+        irAlCarritoNewButton = new JButton("Ir al Carrito");
+        /*irAlCarritoNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                TarjetasUI tarjetasUI = new TarjetasUI(new ProductoService(), new VentaServicio(), new ClienteServicio(), 1L, modeloProductosC);
+                tarjetasUI.setVisible(true);
+            }
+        });*/
+        irAlCarritoNewButton.setBounds(105, 225, 187, 23);
+
     }
 
-    private JList<ProductoDTO> inicializarListaProductos() {
+    private void inicializarJButtonListarProductos() {
+        listarProductosNewButton = new JButton("Listar productos");
+        listarProductosNewButton.setBounds(24, 191, 188, 23);
 
+        listarProductosNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                listProductos.removeAllElements();
+                productoService.listarProductos().stream().map(
+                        producto -> new ProductoDTO(producto.getId(), producto.getCodigo(), producto.getDescripcion(), producto.getCategoria(), new MarcaDTO(producto.getMarca().getNombre()), producto.getPrecio()))
+                        .forEach(productoDTO -> listProductos.addElement(productoDTO));
+            }
+        });
+    }
+
+    private void inicializarJButtonAgregarAlCarrito() {
+        agregarAlCarritoNewButton = new JButton("Agregar al Carrito");
+        agregarAlCarritoNewButton.setBounds(222, 191, 187, 23);
+        agregarAlCarritoNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int[] index = listProductos.getSelectedIndices();
+                if (index.length == 0) {
+                    JOptionPane.showMessageDialog(null, "Debe seleccionar al menos un producto", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                for (int j : index) {
+                    modeloProductos.addElement(listProductos.getModel().getElementAt(j));
+                }
+            }
+        });
+    }
+
+    private void inicializarJFrame() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 450, 300);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+        setVisible(true);
+    }
+
+    private void inicializarJLabelTitulo() {
+        listaDeProductosNewLabel = new JLabel("Lista de Productos: ");
+        listaDeProductosNewLabel.setForeground(new Color(0, 0, 0));
+        listaDeProductosNewLabel.setFont(new Font("Franklin Gothic Demi", Font.PLAIN, 14));
+        listaDeProductosNewLabel.setBounds(135, 11, 187, 15);
+    }
+
+    private void inicializarListaProductos() {
         List<ProductoDTO> productoDTOList = productoService.listarProductos().stream().map((producto -> new ProductoDTO(producto.getId(), producto.getCodigo(), producto.getDescripcion(), producto.getCategoria(), new MarcaDTO(producto.getMarca().getNombre()), producto.getPrecio()))).toList();
-
-        JList<ProductoDTO> listaProductos = new ListaProductos(productoDTOList);
-        listaProductos.setModel(new DefaultListModel<>());
-        listaProductos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        listaProductos.setLayoutOrientation(JList.VERTICAL);
-        listaProductos.setVisibleRowCount(-1);
-        listaProductos.setVisible(true);
-        return listaProductos;
+        listProductos = new ListaProductos(productoDTOList);
     }
-    private JTextPane inicializarJPanePromocionesActivas() {
-        JTextPane jTextPane = new JTextPane();
-        jTextPane.setEditable(false);
-        StyledDocument doc = jTextPane.getStyledDocument();
+
+    private void inicializarJPanePromocionesActivas() {
+        textPanePromociones = new JTextPane();
+        textPanePromociones.setEditable(false);
+        StyledDocument doc = textPanePromociones.getStyledDocument();
 
         SimpleAttributeSet attributeSet = new SimpleAttributeSet();
         StyleConstants.setBold(attributeSet, true);
-        jTextPane.setCharacterAttributes(attributeSet, true);
-        jTextPane.setText("Promociones Activas");
-        try{
-            for(Promocion promocion : promocionService.encontrarPromociones()){
+        textPanePromociones.setCharacterAttributes(attributeSet, true);
+        textPanePromociones.setText("Promociones Activas");
+        try {
+            for (Promocion promocion : promocionService.encontrarPromociones()) {
                 doc.insertString(doc.getLength(), promocion.toString(), attributeSet);
             }
-        }catch (BadLocationException e) {
+        } catch (BadLocationException e) {
             JOptionPane.showMessageDialog(frame, "Error al cargar promociones activas", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        return jTextPane;
     }
-
-
 }

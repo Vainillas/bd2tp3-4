@@ -14,6 +14,8 @@ public interface ClienteService {
     // validar que sea un cliente existente
     void agregarTarjeta(Long idCliente, String nro, String marca);
 
+    void agregarTarjeta(Long idCliente, String nro, String marca, double fondos);
+
     //Devuelve las tarjetas de un cliente específico
     List<TarjetaCredito> listarTarjetas(Long idCliente);
 }

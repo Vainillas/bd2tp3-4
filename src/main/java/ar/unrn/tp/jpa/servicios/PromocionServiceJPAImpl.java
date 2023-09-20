@@ -47,7 +47,7 @@ public class PromocionServiceJPAImpl extends ServiceJPAImpl implements Promocion
     public void crearDescuentoSobreTotal(Long ID, String marcaTarjeta, LocalDate fechaDesde, LocalDate fechaHasta, double porcentaje) {
         inTransactionExecute((em) -> {
             Promocion promocion = new PromocionCompra(ID, fechaDesde, fechaHasta, EmisorTarjeta.valueOf(marcaTarjeta), porcentaje);
-            em.persist(promocion);
+            em.merge(promocion);
         });
     }
 
@@ -56,7 +56,7 @@ public class PromocionServiceJPAImpl extends ServiceJPAImpl implements Promocion
         inTransactionExecute((em) -> {
             Marca marca = em.find(Marca.class, marcaProducto);
             Promocion promocion = new PromocionProducto(ID, fechaDesde, fechaHasta, marca, porcentaje);
-            em.persist(promocion);
+            em.merge(promocion);
         });
     }
 }

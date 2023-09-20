@@ -18,6 +18,7 @@ public class PromocionCompra implements Promocion {
     private double DESCUENTO = 0.08;
     private LocalDate diaInicio;
     private LocalDate diaFin;
+    @Enumerated(EnumType.STRING)
     private EmisorTarjeta emisorTarjeta;
 
 

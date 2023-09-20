@@ -28,8 +28,7 @@ public class Cliente {
     private String email;
     //Sacar el fetchtype eager
 
-    //@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Transient
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<TarjetaCredito> tarjetas = new ArrayList<>();
 
 

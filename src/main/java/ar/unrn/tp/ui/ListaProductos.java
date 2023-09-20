@@ -11,12 +11,19 @@ public class ListaProductos extends JList<ProductoDTO> {
     public ListaProductos(List<ProductoDTO> list) {
         this.model = new DefaultListModel<>();
         setModel(model);
+        setBounds(24, 37, 385, 143);
         model.addAll(list);
     }
 
     public void actualizarLista(List<ProductoDTO> list) {
         model.clear();
         model.addAll(list);
+    }
+    public void removeAllElements(){
+        model.removeAllElements();
+    }
+    public void addElement(ProductoDTO productoDTO){
+        model.addElement(productoDTO);
     }
 
 

@@ -15,11 +15,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 public class TarjetaCredito {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    private Long id;
 
+    private Long id;
+    @Id
+    @Column(name = "numero", nullable = false)
     private String numero;
     @Enumerated(EnumType.STRING)
     private EmisorTarjeta emisorTarjeta;

@@ -9,7 +9,6 @@ import jakarta.persistence.EntityManagerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class ClienteServiceJPAImpl extends ServiceJPAImpl implements ClienteService {
     private EntityManagerFactory entityManager;
@@ -59,6 +58,17 @@ public class ClienteServiceJPAImpl extends ServiceJPAImpl implements ClienteServ
             //Obtener un enum mediante el nombre del enum
             EmisorTarjeta emisorTarjeta = EmisorTarjeta.valueOf(marca);
             TarjetaCredito tarjeta = new TarjetaCredito(nro,true, 0, emisorTarjeta);
+            c.agregarTarjeta(tarjeta);
+            em.merge(c);
+        });
+    }
+    @Override
+    public void agregarTarjeta(Long idCliente, String nro, String marca, double fondos) {
+        inTransactionExecute((em) -> {
+            Cliente c = em.find(Cliente.class, idCliente);
+            //Obtener un enum mediante el nombre del enum
+            EmisorTarjeta emisorTarjeta = EmisorTarjeta.valueOf(marca);
+            TarjetaCredito tarjeta = new TarjetaCredito(nro,true, fondos, emisorTarjeta);
             c.agregarTarjeta(tarjeta);
             em.merge(c);
         });
