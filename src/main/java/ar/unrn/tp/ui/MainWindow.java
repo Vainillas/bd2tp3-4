@@ -3,7 +3,6 @@ package ar.unrn.tp.ui;
 import ar.unrn.tp.api.*;
 import ar.unrn.tp.dto.MarcaDTO;
 import ar.unrn.tp.dto.ProductoDTO;
-import ar.unrn.tp.modelo.Producto;
 import ar.unrn.tp.modelo.Promocion;
 
 import javax.swing.*;
@@ -27,14 +26,16 @@ public class MainWindow extends JFrame {
 
 
     JFrame frame;
-    ListaProductos listProductos;
+    ListaProductos listProductosWindow;
+    CarritoUI carritoWindow;
     JLabel listaDeProductosNewLabel;
-    DefaultListModel<ProductoDTO> modeloProductos = new DefaultListModel<>();
+    DefaultListModel<ProductoDTO> listaProductosSeleccionados = new DefaultListModel<>();
     JPanel contentPane;
     JButton agregarAlCarritoNewButton;
     JButton listarProductosNewButton;
     JButton irAlCarritoNewButton;
     JTextPane textPanePromociones;
+
 
     public MainWindow(VentaService ventaService, ProductoService productoService, MarcaService marcaService, PromocionService promocionService, ClienteService clienteService, Long idCliente) {
         this.ventaService = ventaService;
@@ -54,24 +55,24 @@ public class MainWindow extends JFrame {
         inicializarJButtonListarProductos();
         inicializarJButtonIrAlCarrito();
         inicializarJPanePromocionesActivas();
-        contentPane.add(listProductos);
+        contentPane.add(listProductosWindow);
         contentPane.add(listaDeProductosNewLabel);
         contentPane.add(agregarAlCarritoNewButton);
         contentPane.add(listarProductosNewButton);
         contentPane.add(textPanePromociones);
         contentPane.add(irAlCarritoNewButton);
-
     }
 
     private void inicializarJButtonIrAlCarrito() {
         irAlCarritoNewButton = new JButton("Ir al Carrito");
-        /*irAlCarritoNewButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                TarjetasUI tarjetasUI = new TarjetasUI(new ProductoService(), new VentaServicio(), new ClienteServicio(), 1L, modeloProductosC);
-                tarjetasUI.setVisible(true);
-            }
-        });*/
         irAlCarritoNewButton.setBounds(105, 225, 187, 23);
+        irAlCarritoNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                CarritoUI carritoWindow = new CarritoUI(productoService, ventaService, clienteService, 1L, listaProductosSeleccionados);
+                carritoWindow.setVisible(true);
+            }
+        });
+
 
     }
 
@@ -79,13 +80,11 @@ public class MainWindow extends JFrame {
         listarProductosNewButton = new JButton("Listar productos");
         listarProductosNewButton.setBounds(24, 191, 188, 23);
 
-        listarProductosNewButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                listProductos.removeAllElements();
-                productoService.listarProductos().stream().map(
-                        producto -> new ProductoDTO(producto.getId(), producto.getCodigo(), producto.getDescripcion(), producto.getCategoria(), new MarcaDTO(producto.getMarca().getNombre()), producto.getPrecio()))
-                        .forEach(productoDTO -> listProductos.addElement(productoDTO));
-            }
+        listarProductosNewButton.addActionListener(e -> {
+            listProductosWindow.removeAllElements();
+            productoService.listarProductos().stream().map(
+                    producto -> new ProductoDTO(producto.getId(), producto.getCodigo(), producto.getDescripcion(), producto.getCategoria(), new MarcaDTO(producto.getMarca().getNombre()), producto.getPrecio()))
+                    .forEach(productoDTO -> listProductosWindow.addElement(productoDTO));
         });
     }
 
@@ -94,13 +93,13 @@ public class MainWindow extends JFrame {
         agregarAlCarritoNewButton.setBounds(222, 191, 187, 23);
         agregarAlCarritoNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int[] index = listProductos.getSelectedIndices();
+                int[] index = listProductosWindow.getSelectedIndices();
                 if (index.length == 0) {
                     JOptionPane.showMessageDialog(null, "Debe seleccionar al menos un producto", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 for (int j : index) {
-                    modeloProductos.addElement(listProductos.getModel().getElementAt(j));
+                    listaProductosSeleccionados.addElement(listProductosWindow.getModel().getElementAt(j));
                 }
             }
         });
@@ -126,7 +125,7 @@ public class MainWindow extends JFrame {
 
     private void inicializarListaProductos() {
         List<ProductoDTO> productoDTOList = productoService.listarProductos().stream().map((producto -> new ProductoDTO(producto.getId(), producto.getCodigo(), producto.getDescripcion(), producto.getCategoria(), new MarcaDTO(producto.getMarca().getNombre()), producto.getPrecio()))).toList();
-        listProductos = new ListaProductos(productoDTOList);
+        listProductosWindow = new ListaProductos(productoDTOList);
     }
 
     private void inicializarJPanePromocionesActivas() {

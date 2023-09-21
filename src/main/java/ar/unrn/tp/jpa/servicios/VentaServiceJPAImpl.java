@@ -40,7 +40,7 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
             List<Producto> productosVenta = productoService.encontrarProductos(productos);
             if(productosVenta.isEmpty()) throw new RuntimeException("La lista de productos no puede estar vacía");
             Venta v = new Venta(idVenta, LocalDateTime.now(), c, productosVenta, calcularMonto(productos, idTarjeta));
-            em.persist(v);
+            em.merge(v);
         });
     }
     @Override
@@ -50,7 +50,32 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
             TarjetaCredito t = em.find(TarjetaCredito.class, idTarjeta);
             List<Producto> productosVenta = productoService.encontrarProductos(productos);
             Venta v = new Venta(LocalDateTime.now(), c, productosVenta, calcularMonto(productos, idTarjeta));
-            em.persist(v);
+            em.merge(v);
+        });
+    }
+
+    @Override
+    public void realizarVenta(Long idVenta, Long idCliente, List<Long> productos, String numeroTarjeta) {
+        inTransactionExecute((em) -> { //TODO: refactor exceptions
+            Cliente c = em.find(Cliente.class, idCliente);
+            if(c == null) throw new RuntimeException("El cliente no existe");
+            TarjetaCredito t = em.find(TarjetaCredito.class, numeroTarjeta);
+            if(t == null || !c.getTarjetas().contains(t)) throw new RuntimeException("La tarjeta no existe o no pertenece al cliente");
+            List<Producto> productosVenta = productoService.encontrarProductos(productos);
+            if(productosVenta.isEmpty()) throw new RuntimeException("La lista de productos no puede estar vacía");
+            Venta v = new Venta(idVenta, LocalDateTime.now(), c, productosVenta, calcularMonto(productos, numeroTarjeta));
+            em.merge(v);
+        });
+    }
+
+    @Override
+    public void realizarVenta(Long idCliente, List<Long> productos, String numeroTarjeta) {
+        inTransactionExecute((em) -> {
+            Cliente c = em.find(Cliente.class, idCliente);
+            TarjetaCredito t = em.find(TarjetaCredito.class, numeroTarjeta);
+            List<Producto> productosVenta = productoService.encontrarProductos(productos);
+            Venta v = new Venta(LocalDateTime.now(), c, productosVenta, calcularMonto(productos, numeroTarjeta));
+            em.merge(v);
         });
     }
 
@@ -59,6 +84,18 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
         AtomicReference<Double> monto = new AtomicReference<>((double) 0);
         inTransactionExecute((em) -> {
             TarjetaCredito tarjetaCredito = em.find(TarjetaCredito.class, idTarjeta);
+            List<Producto> productosVenta = productoService.encontrarProductos(productos);
+            PromocionCollector promociones = recuperarPromocionesActivas();
+            CarritoCompra carrito = new CarritoCompra(productosVenta, tarjetaCredito, promociones);
+            monto.set(carrito.calcularTotal(tarjetaCredito));
+        });
+        return monto.get();
+    }
+    @Override
+    public double calcularMonto(List<Long> productos, String numeroTarjeta) {
+        AtomicReference<Double> monto = new AtomicReference<>((double) 0);
+        inTransactionExecute((em) -> {
+            TarjetaCredito tarjetaCredito = em.find(TarjetaCredito.class, numeroTarjeta);
             List<Producto> productosVenta = productoService.encontrarProductos(productos);
             PromocionCollector promociones = recuperarPromocionesActivas();
             CarritoCompra carrito = new CarritoCompra(productosVenta, tarjetaCredito, promociones);
