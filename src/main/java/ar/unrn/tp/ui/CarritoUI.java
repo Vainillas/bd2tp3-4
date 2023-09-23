@@ -2,9 +2,10 @@ package ar.unrn.tp.ui;
 
 import ar.unrn.tp.api.ClienteService;
 import ar.unrn.tp.api.ProductoService;
+import ar.unrn.tp.api.PromocionService;
 import ar.unrn.tp.api.VentaService;
-import ar.unrn.tp.dto.ProductoDTO;
-import ar.unrn.tp.dto.TarjetaDTO;
+import ar.unrn.tp.dto.*;
+import ar.unrn.tp.modelo.Promocion;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -16,6 +17,7 @@ import java.util.List;
 
 public class CarritoUI extends JFrame {
 
+    private final PromocionService promocionService;
     private ProductoService productoService;
     private VentaService ventaService;
     private ClienteService clienteService;
@@ -29,7 +31,9 @@ public class CarritoUI extends JFrame {
 
     JPanel contentPane;
     JList<TarjetaDTO> listTarjetas;
+    JList<String> listPromociones;
     DefaultListModel<TarjetaDTO> modeloTarjeta;
+    DefaultListModel<String> modeloPromociones;
     JLabel tarjetasNewLabel;
     JLabel tarjetaSelectedNewLabel;
     JButton seleccionarTarjetaNewButton;
@@ -38,9 +42,11 @@ public class CarritoUI extends JFrame {
     JLabel carritoListNewLabel;
     JButton montoTotalNewButton;
     JButton comprarNewButton;
+    private JLabel promocionesActivasLabel;
 
 
-    public CarritoUI(ProductoService productoService, VentaService ventaService, ClienteService clienteService, long l, DefaultListModel<ProductoDTO> listaProductosSeleccionados) {
+    public CarritoUI(PromocionService promocionService, ProductoService productoService, VentaService ventaService, ClienteService clienteService, long l, DefaultListModel<ProductoDTO> listaProductosSeleccionados) {
+        this.promocionService = promocionService;
         this.productoService = productoService;
         this.ventaService = ventaService;
         this.clienteService = clienteService;
@@ -50,8 +56,9 @@ public class CarritoUI extends JFrame {
     }
 
     private void init() {
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 450, 300);
+        setBounds(100, 100, 450, 350);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -62,9 +69,23 @@ public class CarritoUI extends JFrame {
     }
 
     private void initTarjetasWindow() {
+
+        promocionesActivasLabel = new JLabel("Promociones activas:");
+        promocionesActivasLabel.setFont(new Font("Franklin Gothic Demi", Font.PLAIN, 14));
+        promocionesActivasLabel.setBounds(10, 240, 179, 14);
+        contentPane.add(promocionesActivasLabel);
+
+        listPromociones = new JList<String>();
+        modeloPromociones = new DefaultListModel<String>();
+        for(Promocion p : promocionService.encontrarPromociones()){
+            modeloPromociones.addElement(new PromocionDTO(p.toString()).descripcion());
+        }
+        listPromociones.setModel(modeloPromociones);
+        listPromociones.setBounds(10, 262, 420, 63);
+        contentPane.add(listPromociones);
+
+
         modeloTarjeta = new DefaultListModel<>();
-
-
         listTarjetas = new JList<>();
         listTarjetas.setModel(modeloTarjeta);
         listTarjetas.setBounds(10, 36, 256, 63);

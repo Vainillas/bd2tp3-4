@@ -35,7 +35,7 @@ public class MainWindow extends JFrame {
     JButton listarProductosNewButton;
     JButton irAlCarritoNewButton;
     JTextPane textPanePromociones;
-
+    //TODO: refactor de las ventanas para hacer el tamaño ajustable
 
     public MainWindow(VentaService ventaService, ProductoService productoService, MarcaService marcaService, PromocionService promocionService, ClienteService clienteService, Long idCliente) {
         this.ventaService = ventaService;
@@ -68,7 +68,7 @@ public class MainWindow extends JFrame {
         irAlCarritoNewButton.setBounds(105, 225, 187, 23);
         irAlCarritoNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                CarritoUI carritoWindow = new CarritoUI(productoService, ventaService, clienteService, 1L, listaProductosSeleccionados);
+                CarritoUI carritoWindow = new CarritoUI(promocionService, productoService, ventaService, clienteService, 1L, listaProductosSeleccionados);
                 carritoWindow.setVisible(true);
             }
         });
