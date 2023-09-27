@@ -1,5 +1,6 @@
 package ar.unrn.tp.modelo;
 
+import ar.unrn.tp.modelo.exceptions.BusinessException;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -49,7 +50,10 @@ public class TarjetaCredito {
         return fondos >= monto;
     }
     public void descontarFondos(double monto) {
-        fondos -= monto;
+        if(tieneFondosSuficientes(monto))
+            fondos -= monto;
+        else
+            throw new BusinessException("La tarjeta no tiene fondos suficientes");
     }
     public void sumarFondos(double monto) {
         fondos += monto;

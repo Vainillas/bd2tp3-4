@@ -51,7 +51,7 @@ public class PromocionServiceJPAImpl extends ServiceJPAImpl implements Promocion
     @Override
     public void crearDescuentoSobreTotal(Long ID, String marcaTarjeta, LocalDate fechaDesde, LocalDate fechaHasta, double porcentaje) {
         inTransactionExecute((em) -> {
-            if (em.find(Promocion.class, ID) != null)
+            if (em.find(PromocionCompra.class, ID) != null)
                 throw new BusinessException("Ya existe una promocion con el id: " + ID);
             Promocion promocion = new PromocionCompra(ID, fechaDesde, fechaHasta, EmisorTarjeta.valueOf(marcaTarjeta), porcentaje);
             em.merge(promocion);
@@ -65,7 +65,7 @@ public class PromocionServiceJPAImpl extends ServiceJPAImpl implements Promocion
             if (marca == null)
                 throw new BusinessException("No existe la marca " + marcaProducto);
             Promocion promocion = new PromocionProducto(ID, fechaDesde, fechaHasta, marca, porcentaje);
-            if (em.find(Promocion.class, ID) != null)
+            if (em.find(PromocionProducto.class, ID) != null)
                 throw new BusinessException("Ya existe una promocion con el id: " + ID);
             em.merge(promocion);
         });

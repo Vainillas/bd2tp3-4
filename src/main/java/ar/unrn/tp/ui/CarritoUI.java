@@ -4,6 +4,7 @@ import ar.unrn.tp.api.ClienteService;
 import ar.unrn.tp.api.ProductoService;
 import ar.unrn.tp.api.PromocionService;
 import ar.unrn.tp.api.VentaService;
+import ar.unrn.tp.api.exceptions.ServiceException;
 import ar.unrn.tp.dto.*;
 import ar.unrn.tp.modelo.Promocion;
 import ar.unrn.tp.modelo.exceptions.BusinessException;
@@ -128,7 +129,7 @@ public class CarritoUI extends JFrame {
                 modeloTarjeta.removeAllElements();
                 try{
                     tarjetas = clienteService.listarTarjetas(idCliente).stream().map(tarjeta -> new TarjetaDTO(tarjeta.getNumero(), tarjeta.getEmisorTarjeta(), tarjeta.isActiva(), tarjeta.getFondos())).toList();
-                }catch (BusinessException ex) {
+                }catch (ServiceException | BusinessException ex) {
                     JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     throw new GUIException(ex);
                 }
@@ -168,7 +169,7 @@ public class CarritoUI extends JFrame {
                     JOptionPane.showMessageDialog(null, "El monto total es : " + ventaService.calcularMonto(productosCompra, tarjetaSeleccionada.numero()), //Revisar el cambio de ID por el número de tarjeta
                             "Monto", JOptionPane.INFORMATION_MESSAGE);
 
-                } catch (BusinessException | GUIException e1) {
+                } catch (ServiceException | BusinessException | GUIException e1) {
                     JOptionPane.showMessageDialog(null, "Error: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
                 }
@@ -193,7 +194,7 @@ public class CarritoUI extends JFrame {
                     }
                     ventaService.realizarVenta(idCliente, productosCompra, tarjetaSeleccionada.numero()); //Revisar el cambio de ID por el número de tarjeta
                     JOptionPane.showMessageDialog(null, "La venta se realizo correctametne", "Exito", JOptionPane.INFORMATION_MESSAGE);
-                } catch (BusinessException | GUIException e1) {
+                } catch (ServiceException | BusinessException | GUIException e1) {
                     JOptionPane.showMessageDialog(null, "Error: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
 

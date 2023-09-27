@@ -4,6 +4,7 @@ import ar.unrn.tp.api.MarcaService;
 import ar.unrn.tp.api.ProductoService;
 import ar.unrn.tp.modelo.Categoria;
 import ar.unrn.tp.modelo.Producto;
+import ar.unrn.tp.modelo.exceptions.BusinessException;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.AfterEach;
@@ -57,7 +58,7 @@ public class ProductoServiceTest {
         MarcaService marcaService = new MarcaServiceJPAImpl(emf);
         marcaService.crearMarca("DC Comics");
         productoService.crearProducto(2L, "XQ-124", "Juguete de Batman", 1000.0, Categoria.JUGUETES,marcaService.encontrarMarca("DC Comics"));
-        Assertions.assertThrows(RuntimeException.class, () -> {
+        Assertions.assertThrows(BusinessException.class, () -> {
             productoService.crearProducto(2L, "XQ-123", "Juguete de Quetzalcoatlus", 1000.0, Categoria.JUGUETES);
         });
     }

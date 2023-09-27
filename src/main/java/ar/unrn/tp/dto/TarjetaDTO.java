@@ -10,4 +10,7 @@ import java.io.Serializable;
  */
 public record TarjetaDTO(String numero, EmisorTarjeta emisorTarjeta, boolean activa,
                          double fondos) implements Serializable {
+    public String toString(){
+        return emisorTarjeta + ": " +numero + " - Monto: $" + fondos + " - " + activa;
+    }
 }

@@ -2,6 +2,7 @@ package ar.unrn.tp.jpa.servicios;
 
 import ar.unrn.tp.api.VentaService;
 import ar.unrn.tp.modelo.*;
+import ar.unrn.tp.modelo.exceptions.BusinessException;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.AfterEach;
@@ -61,7 +62,7 @@ public class VentaServiceTest {
     @Test
     public void crearVentaSinProductos(){
         VentaService ventaServiceJPA = new VentaServiceJPAImpl(emf, new ProductoServiceJPAImpl(emf), new PromocionServiceJPAImpl(emf));
-        Assertions.assertThrows(RuntimeException.class, () -> {
+        Assertions.assertThrows(BusinessException.class, () -> {
             ventaServiceJPA.realizarVenta(1L, 1L, new ArrayList<>(), 1L);
         });
     }
@@ -77,7 +78,7 @@ public class VentaServiceTest {
         serviceJPA.inTransactionExecute((entityManager -> {
             productosId.addAll(entityManager.createQuery("select p.id from Producto p", Long.class).getResultList());
         }));
-        Assertions.assertThrows(RuntimeException.class, () -> {
+        Assertions.assertThrows(BusinessException.class, () -> {
             ventaServiceJPA.realizarVenta(1L, 1L, productosId, 2L);
         });
     }

@@ -39,7 +39,7 @@ public class Venta {
         this.id = id;
     }
     public List<ProductoHistorico> convertirProductosAHistorico(List<Producto> listaProductos){
-        return List.of(listaProductos.stream().map(producto -> new ProductoHistorico(producto.getId(), producto.getCodigo(), producto.getDescripcion(), producto.getCategoria(), producto.getMarca(), producto.getPrecio())).toArray(ProductoHistorico[]::new));
+        return List.of(listaProductos.stream().map(producto -> new ProductoHistorico(producto.getCodigo(), producto.getDescripcion(), producto.getCategoria(), producto.getMarca(), producto.getPrecio())).toArray(ProductoHistorico[]::new));
     }
 
 }

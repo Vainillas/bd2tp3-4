@@ -9,6 +9,8 @@ import jakarta.persistence.Persistence;
 import java.util.function.Consumer;
 
 public class ServiceJPAImpl {
+    //TODO: refactorizar la implementación de los servicios con un método general para que no repitan el
+    //      inTransactionExecute con trycatch en todos los métodos
     private EntityManagerFactory entityManager;
 
     public ServiceJPAImpl(EntityManagerFactory entityManager) {

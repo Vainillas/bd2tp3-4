@@ -3,6 +3,7 @@ package ar.unrn.tp.jpa.servicios;
 import ar.unrn.tp.api.ProductoService;
 import ar.unrn.tp.api.PromocionService;
 import ar.unrn.tp.api.VentaService;
+import ar.unrn.tp.api.exceptions.ServiceException;
 import ar.unrn.tp.modelo.*;
 import ar.unrn.tp.modelo.exceptions.BusinessException;
 import jakarta.persistence.EntityManagerFactory;
@@ -34,6 +35,7 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
 
     @Override
     public void realizarVenta(Long idVenta, Long idCliente, List<Long> productos, Long idTarjeta) {
+        try{
         inTransactionExecute((em) -> { //TODO: refactor exceptions
             Cliente c = em.find(Cliente.class, idCliente);
             if(c == null) throw new BusinessException("El cliente no existe");
@@ -42,11 +44,17 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
             List<Producto> productosVenta = productoService.encontrarProductos(productos);
             if(productosVenta.isEmpty()) throw new BusinessException("La lista de productos no puede estar vacía");
             Venta v = new Venta(idVenta, LocalDateTime.now(), c, productosVenta, calcularMonto(productos, idTarjeta));
-            em.merge(v);
-        });
+            t.descontarFondos(v.getMontoTotal());
+            em.merge(t);
+            em.persist(v);
+        });}
+        catch (Exception e){
+            throw new ServiceException("Error al realizar la venta: "+ e.getMessage());
+        }
     }
     @Override
     public void realizarVenta(Long idCliente, List<Long> productos, Long idTarjeta) {
+        try{
         inTransactionExecute((em) -> {
             Cliente c = em.find(Cliente.class, idCliente);
             if(c == null) throw new BusinessException("El cliente no existe");
@@ -55,26 +63,39 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
             List<Producto> productosVenta = productoService.encontrarProductos(productos);
             if(productosVenta.isEmpty()) throw new BusinessException("La lista de productos no puede estar vacía");
             Venta v = new Venta(LocalDateTime.now(), c, productosVenta, calcularMonto(productos, idTarjeta));
-            em.merge(v);
-        });
+            t.descontarFondos(v.getMontoTotal());
+            em.merge(t);
+            em.persist(v);
+        });}
+        catch (Exception e){
+            throw new ServiceException("Error al realizar la venta: "+ e.getMessage());
+        }
     }
 
     @Override
     public void realizarVenta(Long idVenta, Long idCliente, List<Long> productos, String numeroTarjeta) {
-        inTransactionExecute((em) -> { //TODO: refactor exceptions
-            Cliente c = em.find(Cliente.class, idCliente);
-            if(c == null) throw new BusinessException("El cliente no existe");
-            TarjetaCredito t = em.find(TarjetaCredito.class, numeroTarjeta);
-            if(t == null || !c.getTarjetas().contains(t)) throw new BusinessException("La tarjeta no existe o no pertenece al cliente");
-            List<Producto> productosVenta = productoService.encontrarProductos(productos);
-            if(productosVenta.isEmpty()) throw new BusinessException("La lista de productos no puede estar vacía");
-            Venta v = new Venta(idVenta, LocalDateTime.now(), c, productosVenta, calcularMonto(productos, numeroTarjeta));
-            em.merge(v);
-        });
+        try{
+            inTransactionExecute((em) -> {
+                Cliente c = em.find(Cliente.class, idCliente);
+                if(c == null) throw new BusinessException("El cliente no existe");
+                TarjetaCredito t = em.find(TarjetaCredito.class, numeroTarjeta);
+                if(t == null || !c.getTarjetas().contains(t)) throw new BusinessException("La tarjeta no existe o no pertenece al cliente");
+                List<Producto> productosVenta = productoService.encontrarProductos(productos);
+                if(productosVenta.isEmpty()) throw new BusinessException("La lista de productos no puede estar vacía");
+                Venta v = new Venta(idVenta, LocalDateTime.now(), c, productosVenta, calcularMonto(productos, numeroTarjeta));
+                t.descontarFondos(v.getMontoTotal());
+                em.merge(t);
+                em.persist(v);
+            });
+        }catch (Exception e){
+            throw new ServiceException("Error al realizar la venta: "+ e.getMessage());
+        }
+
     }
 
     @Override
     public void realizarVenta(Long idCliente, List<Long> productos, String numeroTarjeta) {
+        try{
         inTransactionExecute((em) -> {
             Cliente c = em.find(Cliente.class, idCliente);
             if(c == null) throw new BusinessException("El cliente no existe");
@@ -83,8 +104,14 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
             List<Producto> productosVenta = productoService.encontrarProductos(productos);
             if(productosVenta.isEmpty()) throw new BusinessException("La lista de productos no puede estar vacía");
             Venta v = new Venta(LocalDateTime.now(), c, productosVenta, calcularMonto(productos, numeroTarjeta));
-            em.merge(v);
-        });
+            t.descontarFondos(v.getMontoTotal());
+
+            em.merge(t);
+            em.persist(v);
+        });}
+        catch (Exception e){
+            throw new ServiceException("Error al realizar la venta: "+ e.getMessage());
+        }
     }
 
     @Override

@@ -11,4 +11,8 @@ import java.io.Serializable;
  */
 public record ProductoDTO(Long id, String codigo, String descripcion, Categoria categoria, MarcaDTO marca,
                           double precio) implements Serializable {
+    @Override
+    public String toString() {
+        return "Producto " + codigo + " - " + descripcion + " - Precio: $"+ precio +" - " +  marca.nombre() + " - " + categoria.name() ;
+    }
 }

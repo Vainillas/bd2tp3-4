@@ -1,9 +1,6 @@
 package ar.unrn.tp.modelo;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +12,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProductoHistorico{
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private String codigo;
     private String descripcion;
     private Categoria categoria;
@@ -24,12 +23,11 @@ public class ProductoHistorico{
     private Marca marca;
     private double precio;
 
-    public ProductoHistorico(Long id, String codigo, String descripcion, Categoria categoria, Marca marca, double precio) {
+    public ProductoHistorico(String codigo, String descripcion, Categoria categoria, Marca marca, double precio) {
         this.codigo = codigo;
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.precio = precio;
         this.marca = marca;
-        this.id = id;
     }
 }
