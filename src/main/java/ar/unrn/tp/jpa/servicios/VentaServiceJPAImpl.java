@@ -4,6 +4,7 @@ import ar.unrn.tp.api.ProductoService;
 import ar.unrn.tp.api.PromocionService;
 import ar.unrn.tp.api.VentaService;
 import ar.unrn.tp.modelo.*;
+import ar.unrn.tp.modelo.exceptions.BusinessException;
 import jakarta.persistence.EntityManagerFactory;
 
 
@@ -26,6 +27,7 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
         Venta[] venta = new Venta[1];
         inTransactionExecute((em) -> {
             venta[0] = em.find(Venta.class, idVenta);
+            if(venta[0] == null) throw new BusinessException("No existe la venta");
         });
         return venta[0];
     }
@@ -34,11 +36,11 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
     public void realizarVenta(Long idVenta, Long idCliente, List<Long> productos, Long idTarjeta) {
         inTransactionExecute((em) -> { //TODO: refactor exceptions
             Cliente c = em.find(Cliente.class, idCliente);
-            if(c == null) throw new RuntimeException("El cliente no existe");
+            if(c == null) throw new BusinessException("El cliente no existe");
             TarjetaCredito t = em.find(TarjetaCredito.class, idTarjeta);
-            if(t == null || !c.getTarjetas().contains(t)) throw new RuntimeException("La tarjeta no existe o no pertenece al cliente");
+            if(t == null || !c.getTarjetas().contains(t)) throw new BusinessException("La tarjeta no existe o no pertenece al cliente");
             List<Producto> productosVenta = productoService.encontrarProductos(productos);
-            if(productosVenta.isEmpty()) throw new RuntimeException("La lista de productos no puede estar vacía");
+            if(productosVenta.isEmpty()) throw new BusinessException("La lista de productos no puede estar vacía");
             Venta v = new Venta(idVenta, LocalDateTime.now(), c, productosVenta, calcularMonto(productos, idTarjeta));
             em.merge(v);
         });
@@ -47,8 +49,11 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
     public void realizarVenta(Long idCliente, List<Long> productos, Long idTarjeta) {
         inTransactionExecute((em) -> {
             Cliente c = em.find(Cliente.class, idCliente);
+            if(c == null) throw new BusinessException("El cliente no existe");
             TarjetaCredito t = em.find(TarjetaCredito.class, idTarjeta);
+            if(t == null || !c.getTarjetas().contains(t)) throw new BusinessException("La tarjeta no existe o no pertenece al cliente");
             List<Producto> productosVenta = productoService.encontrarProductos(productos);
+            if(productosVenta.isEmpty()) throw new BusinessException("La lista de productos no puede estar vacía");
             Venta v = new Venta(LocalDateTime.now(), c, productosVenta, calcularMonto(productos, idTarjeta));
             em.merge(v);
         });
@@ -58,11 +63,11 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
     public void realizarVenta(Long idVenta, Long idCliente, List<Long> productos, String numeroTarjeta) {
         inTransactionExecute((em) -> { //TODO: refactor exceptions
             Cliente c = em.find(Cliente.class, idCliente);
-            if(c == null) throw new RuntimeException("El cliente no existe");
+            if(c == null) throw new BusinessException("El cliente no existe");
             TarjetaCredito t = em.find(TarjetaCredito.class, numeroTarjeta);
-            if(t == null || !c.getTarjetas().contains(t)) throw new RuntimeException("La tarjeta no existe o no pertenece al cliente");
+            if(t == null || !c.getTarjetas().contains(t)) throw new BusinessException("La tarjeta no existe o no pertenece al cliente");
             List<Producto> productosVenta = productoService.encontrarProductos(productos);
-            if(productosVenta.isEmpty()) throw new RuntimeException("La lista de productos no puede estar vacía");
+            if(productosVenta.isEmpty()) throw new BusinessException("La lista de productos no puede estar vacía");
             Venta v = new Venta(idVenta, LocalDateTime.now(), c, productosVenta, calcularMonto(productos, numeroTarjeta));
             em.merge(v);
         });
@@ -72,8 +77,11 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
     public void realizarVenta(Long idCliente, List<Long> productos, String numeroTarjeta) {
         inTransactionExecute((em) -> {
             Cliente c = em.find(Cliente.class, idCliente);
+            if(c == null) throw new BusinessException("El cliente no existe");
             TarjetaCredito t = em.find(TarjetaCredito.class, numeroTarjeta);
+            if(t == null || !c.getTarjetas().contains(t)) throw new BusinessException("La tarjeta no existe o no pertenece al cliente");
             List<Producto> productosVenta = productoService.encontrarProductos(productos);
+            if(productosVenta.isEmpty()) throw new BusinessException("La lista de productos no puede estar vacía");
             Venta v = new Venta(LocalDateTime.now(), c, productosVenta, calcularMonto(productos, numeroTarjeta));
             em.merge(v);
         });
@@ -84,7 +92,9 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
         AtomicReference<Double> monto = new AtomicReference<>((double) 0);
         inTransactionExecute((em) -> {
             TarjetaCredito tarjetaCredito = em.find(TarjetaCredito.class, idTarjeta);
+            if(tarjetaCredito == null) throw new BusinessException("La tarjeta no existe");
             List<Producto> productosVenta = productoService.encontrarProductos(productos);
+            if(productosVenta.isEmpty()) throw new BusinessException("La lista de productos no puede estar vacía");
             PromocionCollector promociones = recuperarPromocionesActivas();
             CarritoCompra carrito = new CarritoCompra(productosVenta, tarjetaCredito, promociones);
             monto.set(carrito.calcularTotal(tarjetaCredito));
@@ -96,7 +106,9 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
         AtomicReference<Double> monto = new AtomicReference<>((double) 0);
         inTransactionExecute((em) -> {
             TarjetaCredito tarjetaCredito = em.find(TarjetaCredito.class, numeroTarjeta);
+            if(tarjetaCredito == null) throw new BusinessException("La tarjeta no existe");
             List<Producto> productosVenta = productoService.encontrarProductos(productos);
+            if(productosVenta.isEmpty()) throw new BusinessException("La lista de productos no puede estar vacía");
             PromocionCollector promociones = recuperarPromocionesActivas();
             CarritoCompra carrito = new CarritoCompra(productosVenta, tarjetaCredito, promociones);
             monto.set(carrito.calcularTotal(tarjetaCredito));

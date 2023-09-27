@@ -4,6 +4,7 @@ import ar.unrn.tp.api.*;
 import ar.unrn.tp.dto.MarcaDTO;
 import ar.unrn.tp.dto.ProductoDTO;
 import ar.unrn.tp.modelo.Promocion;
+import ar.unrn.tp.ui.exceptions.GUIException;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -46,7 +47,7 @@ public class MainWindow extends JFrame {
         this.idCliente = idCliente;
     }
 
-    public void loadUp() {
+    public void loadUp() throws GUIException {
         System.out.println("Cargando ventana principal");
         inicializarJFrame();
         inicializarListaProductos();
@@ -128,7 +129,7 @@ public class MainWindow extends JFrame {
         listProductosWindow = new ListaProductos(productoDTOList);
     }
 
-    private void inicializarJPanePromocionesActivas() {
+    private void inicializarJPanePromocionesActivas() throws GUIException {
         textPanePromociones = new JTextPane();
         textPanePromociones.setEditable(false);
         StyledDocument doc = textPanePromociones.getStyledDocument();
@@ -143,6 +144,7 @@ public class MainWindow extends JFrame {
             }
         } catch (BadLocationException e) {
             JOptionPane.showMessageDialog(frame, "Error al cargar promociones activas", "Error", JOptionPane.ERROR_MESSAGE);
+            throw new GUIException(e);
         }
     }
 }

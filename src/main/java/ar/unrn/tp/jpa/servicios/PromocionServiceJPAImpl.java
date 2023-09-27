@@ -2,6 +2,7 @@ package ar.unrn.tp.jpa.servicios;
 
 import ar.unrn.tp.api.PromocionService;
 import ar.unrn.tp.modelo.*;
+import ar.unrn.tp.modelo.exceptions.BusinessException;
 import jakarta.persistence.EntityManagerFactory;
 
 
@@ -20,6 +21,8 @@ public class PromocionServiceJPAImpl extends ServiceJPAImpl implements Promocion
         PromocionCompra[] promocion = new PromocionCompra[1];
         inTransactionExecute((em) -> {
             promocion[0] = em.find(PromocionCompra.class, idPromocion);
+            if (promocion[0] == null)
+                throw new BusinessException("No existe la promocion con id: " + idPromocion);
         });
         return promocion[0];
     }
@@ -29,6 +32,8 @@ public class PromocionServiceJPAImpl extends ServiceJPAImpl implements Promocion
         PromocionProducto[] promocion = new PromocionProducto[1];
         inTransactionExecute((em) -> {
             promocion[0] = em.find(PromocionProducto.class, idPromocion);
+            if (promocion[0] == null)
+                throw new BusinessException("No existe la promocion con id: " + idPromocion);
         });
         return promocion[0];
     }
@@ -46,6 +51,8 @@ public class PromocionServiceJPAImpl extends ServiceJPAImpl implements Promocion
     @Override
     public void crearDescuentoSobreTotal(Long ID, String marcaTarjeta, LocalDate fechaDesde, LocalDate fechaHasta, double porcentaje) {
         inTransactionExecute((em) -> {
+            if (em.find(Promocion.class, ID) != null)
+                throw new BusinessException("Ya existe una promocion con el id: " + ID);
             Promocion promocion = new PromocionCompra(ID, fechaDesde, fechaHasta, EmisorTarjeta.valueOf(marcaTarjeta), porcentaje);
             em.merge(promocion);
         });
@@ -55,7 +62,11 @@ public class PromocionServiceJPAImpl extends ServiceJPAImpl implements Promocion
     public void crearDescuento(Long ID, String marcaProducto, LocalDate fechaDesde, LocalDate fechaHasta, double porcentaje) {
         inTransactionExecute((em) -> {
             Marca marca = em.find(Marca.class, marcaProducto);
+            if (marca == null)
+                throw new BusinessException("No existe la marca " + marcaProducto);
             Promocion promocion = new PromocionProducto(ID, fechaDesde, fechaHasta, marca, porcentaje);
+            if (em.find(Promocion.class, ID) != null)
+                throw new BusinessException("Ya existe una promocion con el id: " + ID);
             em.merge(promocion);
         });
     }

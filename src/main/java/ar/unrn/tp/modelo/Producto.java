@@ -1,5 +1,6 @@
 package ar.unrn.tp.modelo;
 
+import ar.unrn.tp.modelo.exceptions.BusinessException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -49,16 +50,16 @@ public class Producto {
 
     private void validarAtributosConstructor(String descripcion, Categoria categoria, double precio, Marca marca) {
         if (descripcion == null || descripcion.isEmpty()) {
-            throw new RuntimeException("La descripcion no puede ser nula o vacia");
+            throw new BusinessException("La descripcion no puede ser nula o vacia");
         }
         if (categoria == null) {
-            throw new RuntimeException("La categoria no puede ser nula");
+            throw new BusinessException("La categoria no puede ser nula");
         }
         if (precio <= 0) {
-            throw new RuntimeException("El precio no puede ser menor o igual a cero");
+            throw new BusinessException("El precio no puede ser menor o igual a cero");
         }
         if (marca == null) {
-            throw new RuntimeException("La marca no puede ser nula");
+            throw new BusinessException("La marca no puede ser nula");
         }
     }
 

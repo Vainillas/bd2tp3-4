@@ -1,5 +1,6 @@
 package ar.unrn.tp.modelo;
 
+import ar.unrn.tp.modelo.exceptions.BusinessException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -63,16 +64,16 @@ public class Cliente {
     }
     public void validarAtributosCliente(String dni, String nombre, String apellido, String email) {
         if (dni == null || dni.isEmpty()) {
-            throw new RuntimeException("El dni no puede ser nulo o vacio");
+            throw new BusinessException("El dni no puede ser nulo o vacio");
         }
         if (nombre == null || nombre.isEmpty()) {
-            throw new RuntimeException("El nombre no puede ser nulo o vacio");
+            throw new BusinessException("El nombre no puede ser nulo o vacio");
         }
         if (apellido == null || apellido.isEmpty()) {
-            throw new RuntimeException("El apellido no puede ser nulo o vacio");
+            throw new BusinessException("El apellido no puede ser nulo o vacio");
         }//Validar que el email tenga un formato válido con regex
         if (email == null || email.isEmpty() || !email.matches("^(.+)@(.+)$")) {
-            throw new RuntimeException("El email no puede ser nulo o vacio");
+            throw new BusinessException("El email no puede ser nulo o vacio");
         }
     }
     public void agregarTarjeta(TarjetaCredito tarjeta) {

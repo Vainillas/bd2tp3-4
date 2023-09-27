@@ -79,4 +79,8 @@ public class PromocionCollector {
         }
         return descuento;
     }
+    //Método para verificar si no hay promociones
+    public boolean estaVacia() {
+        return promociones.isEmpty();
+    }
 }

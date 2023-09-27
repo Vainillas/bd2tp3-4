@@ -4,6 +4,7 @@ import ar.unrn.tp.api.ClienteService;
 import ar.unrn.tp.modelo.Cliente;
 import ar.unrn.tp.modelo.EmisorTarjeta;
 import ar.unrn.tp.modelo.TarjetaCredito;
+import ar.unrn.tp.modelo.exceptions.BusinessException;
 import jakarta.persistence.EntityManagerFactory;
 
 
@@ -30,9 +31,9 @@ public class ClienteServiceJPAImpl extends ServiceJPAImpl implements ClienteServ
     public void crearCliente(Long id, String nombre, String apellido, String dni, String email) {
         inTransactionExecute((em) -> {
             Cliente cliente = em.find(Cliente.class, id);
-            if(cliente!= null){
-                throw new RuntimeException("El cliente ya existe");
-            }else {
+            if (cliente != null) {
+                throw new BusinessException("El cliente ya existe");
+            } else {
                 Cliente c = new Cliente(id, dni, nombre, apellido, email);
                 em.persist(c);
             }
@@ -43,11 +44,15 @@ public class ClienteServiceJPAImpl extends ServiceJPAImpl implements ClienteServ
     public void modificarCliente(Long idCliente, String nombre, String dni, String apellido, String email) {
         inTransactionExecute((em) -> {
             Cliente c = em.find(Cliente.class, idCliente);
-            c.setDni(dni);
-            c.setNombre(nombre);
-            c.setApellido(apellido);
-            c.setEmail(email);
-            em.persist(c);
+            if (c == null) {
+                throw new BusinessException("El cliente no existe");
+            } else {
+                c.setDni(dni);
+                c.setNombre(nombre);
+                c.setApellido(apellido);
+                c.setEmail(email);
+                em.merge(c);
+            }
         });
     }
 
@@ -55,20 +60,25 @@ public class ClienteServiceJPAImpl extends ServiceJPAImpl implements ClienteServ
     public void agregarTarjeta(Long idCliente, String nro, String marca) {
         inTransactionExecute((em) -> {
             Cliente c = em.find(Cliente.class, idCliente);
-            //Obtener un enum mediante el nombre del enum
-            EmisorTarjeta emisorTarjeta = EmisorTarjeta.valueOf(marca);
-            TarjetaCredito tarjeta = new TarjetaCredito(nro,true, 0, emisorTarjeta);
-            c.agregarTarjeta(tarjeta);
-            em.merge(c);
+            if (c == null) {
+                throw new BusinessException("El cliente no existe");
+            } else {
+                //Obtener un enum mediante el nombre del enum
+                EmisorTarjeta emisorTarjeta = EmisorTarjeta.valueOf(marca);
+                TarjetaCredito tarjeta = new TarjetaCredito(nro, true, 0, emisorTarjeta);
+                c.agregarTarjeta(tarjeta);
+                em.merge(c);
+            }
         });
     }
+
     @Override
     public void agregarTarjeta(Long idCliente, String nro, String marca, double fondos) {
         inTransactionExecute((em) -> {
             Cliente c = em.find(Cliente.class, idCliente);
             //Obtener un enum mediante el nombre del enum
             EmisorTarjeta emisorTarjeta = EmisorTarjeta.valueOf(marca);
-            TarjetaCredito tarjeta = new TarjetaCredito(nro,true, fondos, emisorTarjeta);
+            TarjetaCredito tarjeta = new TarjetaCredito(nro, true, fondos, emisorTarjeta);
             c.agregarTarjeta(tarjeta);
             em.merge(c);
         });

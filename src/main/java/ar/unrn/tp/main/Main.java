@@ -6,6 +6,7 @@ import ar.unrn.tp.modelo.Categoria;
 import ar.unrn.tp.modelo.Cliente;
 import ar.unrn.tp.modelo.EmisorTarjeta;
 import ar.unrn.tp.ui.MainWindow;
+import ar.unrn.tp.ui.exceptions.GUIException;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
@@ -36,6 +37,12 @@ public class Main {
 
 
         MainWindow mainWindow = new MainWindow(ventaService, productoService, marcaService, promocionService, clienteService, 1L);
-        mainWindow.loadUp();
+        try{
+            mainWindow.loadUp();
+        }catch(Exception e){
+            System.out.println("Error al cargar la ventana principal");
+            e.printStackTrace();
+        }
+
     }
 }

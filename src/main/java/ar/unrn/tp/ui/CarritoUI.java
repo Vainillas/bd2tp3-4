@@ -6,6 +6,8 @@ import ar.unrn.tp.api.PromocionService;
 import ar.unrn.tp.api.VentaService;
 import ar.unrn.tp.dto.*;
 import ar.unrn.tp.modelo.Promocion;
+import ar.unrn.tp.modelo.exceptions.BusinessException;
+import ar.unrn.tp.ui.exceptions.GUIException;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -109,10 +111,9 @@ public class CarritoUI extends JFrame {
                 int index = listTarjetas.getSelectedIndex();
                 if (index == -1) {
                     JOptionPane.showMessageDialog(null, "Debe seleccionar una tarjeta", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
+                    throw new GUIException("Debe seleccionar una tarjeta");
                 }
                 tarjetaSeleccionada = modeloTarjeta.getElementAt(index);
-                //ver de mostrar tarjeta seleccionada
                 tarjetaSelectedNewLabel.setText(tarjetaSeleccionada.toString());
 
             }
@@ -125,7 +126,12 @@ public class CarritoUI extends JFrame {
         listTarjetasNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 modeloTarjeta.removeAllElements();
-                tarjetas = clienteService.listarTarjetas(idCliente).stream().map(tarjeta -> new TarjetaDTO(tarjeta.getNumero(), tarjeta.getEmisorTarjeta(), tarjeta.isActiva(), tarjeta.getFondos())).toList();
+                try{
+                    tarjetas = clienteService.listarTarjetas(idCliente).stream().map(tarjeta -> new TarjetaDTO(tarjeta.getNumero(), tarjeta.getEmisorTarjeta(), tarjeta.isActiva(), tarjeta.getFondos())).toList();
+                }catch (BusinessException ex) {
+                    JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    throw new GUIException(ex);
+                }
                 for (TarjetaDTO t : tarjetas) {
                     modeloTarjeta.addElement(t);
                 }
@@ -162,8 +168,9 @@ public class CarritoUI extends JFrame {
                     JOptionPane.showMessageDialog(null, "El monto total es : " + ventaService.calcularMonto(productosCompra, tarjetaSeleccionada.numero()), //Revisar el cambio de ID por el número de tarjeta
                             "Monto", JOptionPane.INFORMATION_MESSAGE);
 
-                } catch (RuntimeException e1) {
+                } catch (BusinessException | GUIException e1) {
                     JOptionPane.showMessageDialog(null, "Error: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
                 }
             }
         });
@@ -186,7 +193,7 @@ public class CarritoUI extends JFrame {
                     }
                     ventaService.realizarVenta(idCliente, productosCompra, tarjetaSeleccionada.numero()); //Revisar el cambio de ID por el número de tarjeta
                     JOptionPane.showMessageDialog(null, "La venta se realizo correctametne", "Exito", JOptionPane.INFORMATION_MESSAGE);
-                } catch (RuntimeException e1) {
+                } catch (BusinessException | GUIException e1) {
                     JOptionPane.showMessageDialog(null, "Error: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
 

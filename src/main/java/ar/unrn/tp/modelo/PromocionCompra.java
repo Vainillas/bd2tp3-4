@@ -1,5 +1,6 @@
 package ar.unrn.tp.modelo;
 
+import ar.unrn.tp.modelo.exceptions.BusinessException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -71,13 +72,13 @@ public class PromocionCompra implements Promocion {
 
     public void validarAtributosPromocion(LocalDate diaInicio, LocalDate diaFin) {
         if (diaInicio == null) {
-            throw new RuntimeException("El dia de inicio no puede ser nulo");
+            throw new BusinessException("El dia de inicio no puede ser nulo");
         }
         if (diaFin == null) {
-            throw new RuntimeException("El dia de fin no puede ser nulo");
+            throw new BusinessException("El dia de fin no puede ser nulo");
         }
         if (diaInicio.isAfter(diaFin)) {
-            throw new RuntimeException("El dia de inicio no puede ser posterior al dia de fin");
+            throw new BusinessException("El dia de inicio no puede ser posterior al dia de fin");
         }
     }
     @Override
