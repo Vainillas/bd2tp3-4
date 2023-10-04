@@ -107,7 +107,7 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
             if(productosVenta.isEmpty()) throw new BusinessException("La lista de productos no puede estar vacía");
             NumeroVenta numeroVenta;
             try{
-                 numeroVenta = em.createQuery("select n from NumeroVenta n where n.anio = :anio order by n.numero desc", NumeroVenta.class).setParameter("anio", LocalDateTime.now().getYear()).setLockMode(LockModeType.OPTIMISTIC).getSingleResult();
+                 numeroVenta = em.createQuery("select n from NumeroVenta n where n.anio = :anio order by n.numero desc", NumeroVenta.class).setParameter("anio", LocalDateTime.now().getYear()).setLockMode(LockModeType.PESSIMISTIC_WRITE).getSingleResult();
             }catch (NoResultException e){
                 numeroVenta = new NumeroVenta(0, LocalDateTime.now().getYear());
             }
