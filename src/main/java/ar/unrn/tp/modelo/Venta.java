@@ -18,7 +18,7 @@ public class Venta {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
-
+    private String numero;
     private LocalDateTime fechaHora;
     @ManyToOne
     @JoinColumn(name = "cliente_id")
@@ -33,6 +33,10 @@ public class Venta {
         this.cliente = cliente;
         this.listaProductos = convertirProductosAHistorico(listaProductosHistoricos);
         this.montoTotal = montoTotal;
+    }
+    public Venta(LocalDateTime fechaHora, Cliente cliente, List<Producto> listaProductosHistoricos, double montoTotal, String numero) {
+        this(fechaHora, cliente, listaProductosHistoricos, montoTotal);
+        this.numero = numero;
     }
     public Venta(Long id, LocalDateTime fechaHora, Cliente cliente, List<Producto> listaProductosHistoricos, double montoTotal) {
         this(fechaHora, cliente, listaProductosHistoricos, montoTotal);

@@ -7,6 +7,8 @@ import ar.unrn.tp.api.exceptions.ServiceException;
 import ar.unrn.tp.modelo.*;
 import ar.unrn.tp.modelo.exceptions.BusinessException;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.NoResultException;
 
 
 import java.time.LocalDateTime;
@@ -103,9 +105,15 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
             if(t == null || !c.getTarjetas().contains(t)) throw new BusinessException("La tarjeta no existe o no pertenece al cliente");
             List<Producto> productosVenta = productoService.encontrarProductos(productos);
             if(productosVenta.isEmpty()) throw new BusinessException("La lista de productos no puede estar vacía");
-            Venta v = new Venta(LocalDateTime.now(), c, productosVenta, calcularMonto(productos, numeroTarjeta));
+            NumeroVenta numeroVenta;
+            try{
+                 numeroVenta = em.createQuery("select n from NumeroVenta n where n.anio = :anio order by n.numero desc", NumeroVenta.class).setParameter("anio", LocalDateTime.now().getYear()).setLockMode(LockModeType.OPTIMISTIC).getSingleResult();
+            }catch (NoResultException e){
+                numeroVenta = new NumeroVenta(0, LocalDateTime.now().getYear());
+            }
+            Venta v = new Venta(LocalDateTime.now(), c, productosVenta, calcularMonto(productos, numeroTarjeta),numeroVenta.getSiguienteNumeroVenta());
             t.descontarFondos(v.getMontoTotal());
-
+            em.merge(numeroVenta);
             em.merge(t);
             em.persist(v);
         });}
