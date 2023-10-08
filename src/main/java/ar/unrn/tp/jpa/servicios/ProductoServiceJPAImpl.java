@@ -6,6 +6,7 @@ import ar.unrn.tp.modelo.Marca;
 import ar.unrn.tp.modelo.Producto;
 import ar.unrn.tp.modelo.exceptions.BusinessException;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.RollbackException;
 
 
 import java.util.ArrayList;
@@ -75,6 +76,7 @@ public class ProductoServiceJPAImpl extends ServiceJPAImpl implements ProductoSe
     }
     @Override
     public void modificarProducto(Long idProducto, String descripcion, Categoria categoria, String idMarca, double precio, Long version) {
+        try{
         inTransactionExecute((em) -> {
             Marca m = em.find(Marca.class, idMarca);
             if (m == null)
@@ -82,14 +84,15 @@ public class ProductoServiceJPAImpl extends ServiceJPAImpl implements ProductoSe
             Producto producto = em.find(Producto.class, idProducto);
             if (producto == null)
                 throw new BusinessException("No existe el producto");
-            if(!producto.getVersion().equals(version))
-                throw new BusinessException("El producto ha sido modificado por otro usuario");
             producto.setDescripcion(descripcion);
             producto.setCategoria(categoria);
             producto.setPrecio(precio);
             producto.setMarca(m);
             em.merge(producto);
-        });
+        });}
+        catch (RollbackException e){
+            throw new BusinessException("El producto ha sido modificado por otro usuario");
+        }
     }
 
     @Override

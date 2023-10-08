@@ -7,6 +7,7 @@ import ar.unrn.tp.dto.MarcaDTO;
 import ar.unrn.tp.dto.ProductoDTO;
 import ar.unrn.tp.modelo.Categoria;
 import ar.unrn.tp.modelo.Marca;
+import ar.unrn.tp.modelo.exceptions.BusinessException;
 import jakarta.persistence.OptimisticLockException;
 
 import javax.swing.*;
@@ -120,7 +121,7 @@ public class EditProductWindow extends JFrame {
                 try{
                     productoService.modificarProducto(1L, nombreTextField.getText(), (Categoria) categoriaComboBox.getSelectedItem(), marcaTextField.getText(), Double.parseDouble(precioTextField.getText()), productoDTO.version());
                     JOptionPane.showMessageDialog(null, "Producto modificado correctamente");
-                }catch (Exception ex){
+                }catch (BusinessException ex){
                     JOptionPane.showMessageDialog(null, ex.getMessage());
                 }
                 }
