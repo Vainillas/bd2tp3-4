@@ -84,7 +84,7 @@ public class MainWindow extends JFrame {
         listarProductosNewButton.addActionListener(e -> {
             listProductosWindow.removeAllElements();
             productoService.listarProductos().stream().map(
-                    producto -> new ProductoDTO(producto.getId(), producto.getCodigo(), producto.getDescripcion(), producto.getCategoria(), new MarcaDTO(producto.getMarca().getNombre()), producto.getPrecio()))
+                    producto -> new ProductoDTO(producto.getId(), producto.getCodigo(), producto.getDescripcion(), producto.getCategoria(), new MarcaDTO(producto.getMarca().getNombre()), producto.getPrecio(), producto.getVersion()))
                     .forEach(productoDTO -> listProductosWindow.addElement(productoDTO));
         });
     }
@@ -125,7 +125,7 @@ public class MainWindow extends JFrame {
     }
 
     private void inicializarListaProductos() {
-        List<ProductoDTO> productoDTOList = productoService.listarProductos().stream().map((producto -> new ProductoDTO(producto.getId(), producto.getCodigo(), producto.getDescripcion(), producto.getCategoria(), new MarcaDTO(producto.getMarca().getNombre()), producto.getPrecio()))).toList();
+        List<ProductoDTO> productoDTOList = productoService.listarProductos().stream().map((producto -> new ProductoDTO(producto.getId(), producto.getCodigo(), producto.getDescripcion(), producto.getCategoria(), new MarcaDTO(producto.getMarca().getNombre()), producto.getPrecio(), producto.getVersion()))).toList();
         listProductosWindow = new ListaProductos(productoDTOList);
     }
 

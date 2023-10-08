@@ -18,6 +18,8 @@ public interface ProductoService {
 
         //validar que sea un producto existente
         void modificarProducto(Long idProducto, String codigo,  String descripcion, Categoria categoria, String idMarca, double precio);
+        void modificarProducto(Long idProducto, String descripcion, Categoria categoria, String idMarca, double precio, Long version);
+
         //Devuelve todos los productos
         List<Producto> listarProductos();
 

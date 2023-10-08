@@ -1,10 +1,9 @@
 package ar.unrn.tp.modelo;
 
+import ar.unrn.tp.dto.MarcaDTO;
+import ar.unrn.tp.dto.ProductoDTO;
 import ar.unrn.tp.modelo.exceptions.BusinessException;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +25,8 @@ public class Producto {
     @JoinColumn(name = "nombre")
     private Marca marca;
     private double precio;
+    @Version
+    Long version;
 
     public Producto(String codigo, String descripcion, Categoria categoria, double precio){
 
@@ -70,5 +71,8 @@ public class Producto {
     }
     public double aplicarDescuento(double descuento){
         return precio - (precio * descuento);
+    }
+    public ProductoDTO getDTO(){
+        return new ProductoDTO(id, codigo, descripcion, categoria, new MarcaDTO(marca.getNombre()), precio, version);
     }
 }
