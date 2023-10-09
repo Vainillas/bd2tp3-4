@@ -84,6 +84,8 @@ public class ProductoServiceJPAImpl extends ServiceJPAImpl implements ProductoSe
             Producto producto = em.find(Producto.class, idProducto);
             if (producto == null)
                 throw new BusinessException("No existe el producto");
+            if(!producto.getVersion().equals(version))
+                throw new BusinessException("El producto ha sido modificado por otro usuario");
             producto.setDescripcion(descripcion);
             producto.setCategoria(categoria);
             producto.setPrecio(precio);
