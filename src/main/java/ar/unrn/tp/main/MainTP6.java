@@ -26,7 +26,7 @@ public class MainTP6 {
         PromocionService promocionService = new PromocionServiceJPAImpl(emf);
         MarcaService marcaService = new MarcaServiceJPAImpl(emf);
         VentaRedisService ventaRedisService = new VentaRedisServiceJPAImpl(emf, jedis);
-        VentaService ventaService = new VentaServiceJPAImpl(emf, productoService, promocionService, jedis);
+        VentaService ventaService = new VentaServiceJPAImpl(emf, productoService, promocionService, ventaRedisService);
 
         clienteService.crearCliente(1L, "Mateo", "Aliberti", "43303613", "maliberti@unrn.edu.ar");
         clienteService.agregarTarjeta(1L, "123456789", String.valueOf(EmisorTarjeta.MEMECARD), 10000);

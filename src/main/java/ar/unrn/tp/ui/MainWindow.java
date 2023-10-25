@@ -1,8 +1,7 @@
 package ar.unrn.tp.ui;
 
 import ar.unrn.tp.api.*;
-import ar.unrn.tp.dto.MarcaDTO;
-import ar.unrn.tp.dto.ProductoDTO;
+import ar.unrn.tp.dto.*;
 import ar.unrn.tp.modelo.Promocion;
 import ar.unrn.tp.ui.exceptions.GUIException;
 
@@ -28,14 +27,18 @@ public class MainWindow extends JFrame {
 
     JFrame frame;
     ListaProductos listProductosWindow;
+    Last3SalesWindow last3SalesWindow;
     CarritoUI carritoWindow;
     JLabel listaDeProductosNewLabel;
     DefaultListModel<ProductoDTO> listaProductosSeleccionados = new DefaultListModel<>();
     JPanel contentPane;
     JButton agregarAlCarritoNewButton;
+    JButton mostrarUltimas3Ventas;
     JButton listarProductosNewButton;
     JButton irAlCarritoNewButton;
     JTextPane textPanePromociones;
+
+    JFrame frame3Sales;
     //TODO: refactor de las ventanas para hacer el tamaño ajustable
 
     public MainWindow(VentaService ventaService, ProductoService productoService, MarcaService marcaService, PromocionService promocionService, ClienteService clienteService, Long idCliente) {
@@ -56,17 +59,49 @@ public class MainWindow extends JFrame {
         inicializarJButtonListarProductos();
         inicializarJButtonIrAlCarrito();
         inicializarJPanePromocionesActivas();
+        inicializarJButton3Ventas();
         contentPane.add(listProductosWindow);
+        contentPane.add(mostrarUltimas3Ventas);
         contentPane.add(listaDeProductosNewLabel);
         contentPane.add(agregarAlCarritoNewButton);
         contentPane.add(listarProductosNewButton);
         contentPane.add(textPanePromociones);
         contentPane.add(irAlCarritoNewButton);
+
+    }
+
+    private void inicializarLast3SalesWindow() {
+        last3SalesWindow = new Last3SalesWindow();
+        last3SalesWindow.setBounds(24, 37, 385, 143);
+    }
+    private void initFrame3Sales(){
+        JFrame frame3Sales = new JFrame();
+        frame3Sales.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame3Sales.setBounds(100, 100, 500, 350);
+        JPanel contentPane3Sales = new JPanel();
+        contentPane3Sales.setBorder(new EmptyBorder(5, 5, 5, 5));
+        inicializarLast3SalesWindow();
+        contentPane3Sales.add(last3SalesWindow);
+        frame3Sales.setContentPane(contentPane3Sales);
+        frame3Sales.setVisible(true);
+
+    }
+    private void inicializarJButton3Ventas(){
+        mostrarUltimas3Ventas = new JButton("Mostrar ultimas 3 ventas");
+
+        mostrarUltimas3Ventas.setBounds(222, 225, 187, 23);
+        mostrarUltimas3Ventas.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                initFrame3Sales();
+                last3SalesWindow.actualizarLista(ventaService.ultimas3Ventas(idCliente).stream().map(venta -> new VentaDTO( venta.getId(), venta.getNumero(), venta.getFechaHora(), venta.getCliente().getNombre() + " " +venta.getCliente().getApellido(), venta.getListaProductos().size(), venta.getMontoTotal())).toList());
+                last3SalesWindow.setVisible(true);
+            }
+        });
     }
 
     private void inicializarJButtonIrAlCarrito() {
         irAlCarritoNewButton = new JButton("Ir al Carrito");
-        irAlCarritoNewButton.setBounds(105, 225, 187, 23);
+        irAlCarritoNewButton.setBounds(24, 225, 188, 23);
         irAlCarritoNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 CarritoUI carritoWindow = new CarritoUI(promocionService, productoService, ventaService, clienteService, 1L, listaProductosSeleccionados);

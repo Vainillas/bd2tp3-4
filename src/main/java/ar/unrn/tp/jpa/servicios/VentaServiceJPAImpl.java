@@ -30,12 +30,6 @@ public class VentaServiceJPAImpl extends ServiceJPAImpl implements VentaService 
         this.productoService = productoService;
         this.promocionService = promocionService;
     }
-
-    public VentaServiceJPAImpl(EntityManagerFactory entityManagerFactory, ProductoService productoService, PromocionService promocionService, Jedis jedis) {
-        super(entityManagerFactory);
-        this.productoService = productoService;
-        this.promocionService = promocionService;
-    }
     public VentaServiceJPAImpl(EntityManagerFactory entityManagerFactory, ProductoService productoService, PromocionService promocionService, VentaRedisService ventaRedisService) {
         super(entityManagerFactory);
         this.productoService = productoService;

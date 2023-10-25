@@ -46,6 +46,7 @@ public class CarritoUI extends JFrame {
     JButton montoTotalNewButton;
     JButton comprarNewButton;
     private JLabel promocionesActivasLabel;
+    private MainWindow mainWindow;
 
 
     public CarritoUI(PromocionService promocionService, ProductoService productoService, VentaService ventaService, ClienteService clienteService, long l, DefaultListModel<ProductoDTO> listaProductosSeleccionados) {
@@ -55,6 +56,7 @@ public class CarritoUI extends JFrame {
         this.clienteService = clienteService;
         this.idCliente = l;
         this.listaProductos = listaProductosSeleccionados;
+
         init();
     }
 
