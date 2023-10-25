@@ -78,8 +78,10 @@ public class MainWindow extends JFrame {
         JFrame frame3Sales = new JFrame();
         frame3Sales.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame3Sales.setBounds(100, 100, 500, 350);
+        frame3Sales.setSize(700, 150);
         JPanel contentPane3Sales = new JPanel();
         contentPane3Sales.setBorder(new EmptyBorder(5, 5, 5, 5));
+        contentPane3Sales.setBounds(24, 37, 385, 143);
         inicializarLast3SalesWindow();
         contentPane3Sales.add(last3SalesWindow);
         frame3Sales.setContentPane(contentPane3Sales);
